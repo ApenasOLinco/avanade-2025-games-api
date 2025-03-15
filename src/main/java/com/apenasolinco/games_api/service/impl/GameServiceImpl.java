@@ -40,6 +40,8 @@ public class GameServiceImpl implements GameService {
 	public Game save(Game game) {
 		// Verify the genres
 		var genres = game.getGenres();
+		genres.forEach(g -> g.setName(g.getName().toLowerCase()));
+		
 		var updatedGenres = new HashSet<Genre>();
 
 		for (var genre : genres) {
@@ -49,6 +51,8 @@ public class GameServiceImpl implements GameService {
 
 		// Verify the platforms
 		var platforms = game.getPlatforms();
+		platforms.forEach(p -> p.setName(p.getName().toLowerCase()));
+		
 		var updatedPlatforms = new HashSet<Platform>();
 		
 		for (var platform : platforms) {
