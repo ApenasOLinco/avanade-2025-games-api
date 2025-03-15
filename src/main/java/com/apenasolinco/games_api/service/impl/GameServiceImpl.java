@@ -1,6 +1,7 @@
 package com.apenasolinco.games_api.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,8 +9,10 @@ import org.springframework.stereotype.Service;
 
 import com.apenasolinco.games_api.domain.model.Game;
 import com.apenasolinco.games_api.domain.model.Genre;
+import com.apenasolinco.games_api.domain.model.Platform;
 import com.apenasolinco.games_api.domain.repository.GameRepository;
 import com.apenasolinco.games_api.domain.repository.GenreRepository;
+import com.apenasolinco.games_api.domain.repository.PlatformRepository;
 import com.apenasolinco.games_api.service.GameService;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -24,6 +27,9 @@ public class GameServiceImpl implements GameService {
 	@Autowired
 	private GenreRepository genreRepository;
 
+	@Autowired
+	private PlatformRepository platformRepository;
+
 	@Override
 	public Game getById(Long id) {
 		return gameRepository.findById(id).orElseThrow(EntityNotFoundException::new);
@@ -32,21 +38,27 @@ public class GameServiceImpl implements GameService {
 	@Override
 	@Transactional
 	public Game save(Game game) {
+		// Verify the genres
 		var genres = game.getGenres();
-		var updatedGenres = new ArrayList<Genre>();
+		var updatedGenres = new HashSet<Genre>();
 
-		for (int i = 0; i < genres.size(); i++) {
-			var genre = genres.get(i);
+		for (var genre : genres) {
 			var existingGenre = genreRepository.findByName(genre.getName());
-
-			if (existingGenre.isPresent()) {
-				updatedGenres.add(existingGenre.get());
-			} else {
-				updatedGenres.add(genre);
-			}
+			updatedGenres.add(existingGenre.orElse(genre));
 		}
 
-		game.setGenres(updatedGenres);
+		// Verify the platforms
+		var platforms = game.getPlatforms();
+		var updatedPlatforms = new HashSet<Platform>();
+		
+		for (var platform : platforms) {
+			var existingPlatform = platformRepository.findByName(platform.getName());
+			updatedPlatforms.add(existingPlatform.orElse(platform));
+		}
+
+		game.setGenres(new ArrayList<>(updatedGenres));
+		game.setPlatforms(new ArrayList<>(updatedPlatforms));
+		
 		return gameRepository.save(game);
 	}
 
