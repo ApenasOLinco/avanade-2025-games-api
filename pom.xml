@@ -70,6 +70,23 @@
 	<build>
 		<plugins>
 			<plugin>
+		          	<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+					        <!-- Configures the content of the created manifest -->
+						<manifest>
+						        <!-- Adds the classpath to the created manifest -->
+						    	<addClasspath>true</addClasspath>
+						    	<!-- Specifies that all dependencies of our application are found -->
+						    	<!-- Configures the main class of the application -->
+						    	<mainClass>com.apenasolinco.games_api.Application</mainClass>
+				        	</manifest>	
+					</archive>
+				</configuration>
+	
+        		</plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
