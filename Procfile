@@ -1,1 +1,1 @@
-web: java -jar target/games_api-0.0.1-SNAPSHOT.jar
+web: java -jar target/games-api-0.0.1-SNAPSHOT.jar
